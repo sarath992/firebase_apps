@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "540416922759",
+    "project_id": "fir-application-edfab",
+    "storage_bucket": "fir-application-edfab.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:540416922759:android:ad48f53f72da5c0a7ad422",
+        "android_client_info": {
+          "package_name": "com.example.auth_firebase_application"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyABF5kdHwlC8Mxp2G1zg7JwywE04Lb27rU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
