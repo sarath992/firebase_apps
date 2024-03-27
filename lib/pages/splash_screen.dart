@@ -4,7 +4,6 @@ import 'package:auth_firebase_application/pages/login.dart';
 import 'package:auth_firebase_application/pages/pin_login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -18,8 +17,6 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    SystemChannels.platform.invokeMethod('SystemNavigator.pop');
-
     _navigateToNextScreen();
   }
 

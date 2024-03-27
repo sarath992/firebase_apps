@@ -30,7 +30,7 @@ class _SignInRegisterPageState extends State<SignInRegisterPage> {
 
   void initState() {
     super.initState();
-    SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+    // SystemChannels.platform.invokeMethod('SystemNavigator.pop');
   }
 
   @override
@@ -38,9 +38,7 @@ class _SignInRegisterPageState extends State<SignInRegisterPage> {
     final authBloc = BlocProvider.of<AuthBloc_signup>(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Sign In/Register'),
-      ),
+      appBar: CommonWidgets.buildAppBar('Sign-In/Register'),
       body: BlocListener<AuthBloc_signup, AuthState_SignUp>(
         listener: (context, state) {
           if (state is AuthError_SignUp) {

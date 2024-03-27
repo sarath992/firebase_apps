@@ -21,7 +21,7 @@ class _PingenState extends State<Pingen> {
   bool _isNewUser = true;
   void initState() {
     super.initState();
-    SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+    // SystemChannels.platform.invokeMethod('SystemNavigator.pop');
   }
 
   @override

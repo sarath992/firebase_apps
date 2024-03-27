@@ -1,7 +1,6 @@
 import 'package:auth_firebase_application/authentication/add_to_db_authentication%20.dart';
 import 'package:auth_firebase_application/common_widgets/common_widgets.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auth_firebase_application/model/dummy_data.dart';

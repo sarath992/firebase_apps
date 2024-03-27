@@ -2,7 +2,6 @@ import 'package:auth_firebase_application/authentication/login_authentication.da
 import 'package:auth_firebase_application/authentication/product_list_authentication.dart';
 import 'package:auth_firebase_application/pages/login.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -18,7 +17,7 @@ class _ProductListPageState extends State<ProductListPage> {
   String _searchText = '';
   void initState() {
     super.initState();
-    SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+    // SystemChannels.platform.invokeMethod('SystemNavigator.pop');
   }
 
   @override

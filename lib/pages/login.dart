@@ -29,7 +29,7 @@ class _LoginState extends State<Login> {
 
   void initState() {
     super.initState();
-    SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+    // SystemChannels.platform.invokeMethod('SystemNavigator.pop');
   }
 
   @override
