@@ -15,13 +15,12 @@ class SignUpWithEmailPasswordEvent extends AuthEvent_SignUp {
   });
 }
 
-// ignore: camel_case_types
-abstract class AuthState_SignUp{}
+abstract class AuthState_SignUp {}
+
 class AuthInitial extends AuthState_SignUp {}
 
 class AuthLoading extends AuthState_SignUp {}
 
-// ignore: camel_case_types
 class Authenticated_SignUp extends AuthState_SignUp {
   final User user;
 
@@ -47,16 +46,16 @@ class AuthBloc_signup extends Bloc<AuthEvent_SignUp, AuthState_SignUp> {
     SignUpWithEmailPasswordEvent event,
     Emitter<AuthState_SignUp> emit,
   ) async {
-    emit(AuthLoading()); // Emit loading state
+    emit(AuthLoading());
     try {
       final userCredential = await _auth.createUserWithEmailAndPassword(
         email: event.email,
         password: event.password,
       );
       await userCredential.user!.updateDisplayName(event.username);
-      emit(Authenticated_SignUp(user: userCredential.user!)); 
+      emit(Authenticated_SignUp(user: userCredential.user!));
     } catch (e) {
-      emit(AuthError_SignUp(message: 'Failed to sign up: $e')); 
+      emit(AuthError_SignUp(message: 'Failed to sign up: $e'));
     }
   }
 }

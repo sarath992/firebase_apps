@@ -5,9 +5,12 @@ import 'package:auth_firebase_application/common_widgets/common_widgets.dart';
 import 'package:auth_firebase_application/pages/pin_login.dart';
 import 'package:auth_firebase_application/pages/signup.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Login extends StatefulWidget {
+  const Login({super.key});
+
   @override
   State<Login> createState() => _LoginState();
 }
@@ -16,11 +19,22 @@ class _LoginState extends State<Login> {
   final TextEditingController _emailController = TextEditingController();
 
   final TextEditingController _passwordController = TextEditingController();
+  bool obscureText = true;
+
+  void _passwordVisibility() {
+    setState(() {
+      obscureText = !obscureText;
+    });
+  }
+
+  void initState() {
+    super.initState();
+    SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+  }
 
   @override
   Widget build(BuildContext context) {
     final authBloc = BlocProvider.of<AuthBloc>(context);
-    
 
     return Scaffold(
       appBar: CommonWidgets.buildAppBar('Login'),
@@ -61,15 +75,20 @@ class _LoginState extends State<Login> {
               ),
               CommonWidgets.buildSizedBox(height: 20.0),
               CommonWidgets.buildTextFormField(
-                controller: _passwordController,
-                labelText: 'Password',
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Please enter the password';
-                  }
-                  return null;
-                },
-              ),
+                  controller: _passwordController,
+                  labelText: 'Password',
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter the password';
+                    }
+                    return null;
+                  },
+                  obscureText: obscureText,
+                  suffixIcon: IconButton(
+                      onPressed: _passwordVisibility,
+                      icon: Icon(
+                        obscureText ? Icons.visibility_off : Icons.visibility,
+                      ))),
               CommonWidgets.buildSizedBox(height: 20.0),
               CommonWidgets.buildElevatedButton(
                   onPressed: () {

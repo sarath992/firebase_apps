@@ -1,6 +1,11 @@
-import 'package:flutter/material.dart';
+import 'package:auth_firebase_application/authentication/add_to_db_authentication%20.dart';
+import 'package:auth_firebase_application/common_widgets/common_widgets.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auth_firebase_application/model/dummy_data.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 class ProductDetailsPage extends StatelessWidget {
   final Product product;
@@ -9,6 +14,22 @@ class ProductDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => ProductDetailsBloc(),
+      child: _ProductDetailsUI(product: product),
+    );
+  }
+}
+
+class _ProductDetailsUI extends StatelessWidget {
+  final Product product;
+
+  const _ProductDetailsUI({required this.product});
+
+  @override
+  Widget build(BuildContext context) {
+    String qrData =
+        'Name: ${product.name}, Price: ${product.price}, Measurement: ${product.measurement}';
     return Scaffold(
       appBar: AppBar(
         title: Text(product.name),
@@ -24,12 +45,28 @@ class ProductDetailsPage extends StatelessWidget {
                 Text('Name: ${product.name}'),
                 Text('Price: \$${product.price.toStringAsFixed(2)}'),
                 Text('Measurement: ${product.measurement}'),
-                SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    _addProductToFirestore(scaffoldContext, product);
+                CommonWidgets.buildSizedBox(height: 20.0),
+                QrImageView(
+                  data: qrData,
+                  version: QrVersions.auto,
+                  size: 200.0,
+                ),
+                CommonWidgets.buildSizedBox(height: 20.0),
+                BlocBuilder<ProductDetailsBloc, ProductDetailsState>(
+                  builder: (context, state) {
+                    if (state is ProductDetailsLoading) {
+                      return CircularProgressIndicator();
+                    } else if (state is ProductDetailsFailure) {
+                      return Text('Error: ${state.error}');
+                    } else {
+                      return ElevatedButton(
+                        onPressed: () {
+                          _addProductToFirestore(context, product);
+                        },
+                        child: Text('Add to Firebase'),
+                      );
+                    }
                   },
-                  child: Text('Add to Firebase'),
                 ),
               ],
             ),
@@ -40,10 +77,10 @@ class ProductDetailsPage extends StatelessWidget {
   }
 
   void _addProductToFirestore(BuildContext context, Product product) {
-    String userId = '';
+    final user = "";
 
     Map<String, dynamic> productData = {
-      'user': userId,
+      'user': user,
       'productName': product.name,
     };
 
@@ -52,7 +89,7 @@ class ProductDetailsPage extends StatelessWidget {
         .add(productData)
         .then((value) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Product added to your products'),
+        content: Text('Product added to firebase database'),
       ));
     }).catchError((error) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(

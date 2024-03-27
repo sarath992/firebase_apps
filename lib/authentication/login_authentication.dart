@@ -41,7 +41,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     LoginWithEmailPasswordEvent event,
     Emitter<AuthState> emit,
   ) async {
-    emit(AuthLoading()); 
+    emit(AuthLoading());
     try {
       final userCredential = await _auth.signInWithEmailAndPassword(
         email: event.email,
@@ -49,7 +49,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       );
       emit(Authenticated(user: userCredential.user!));
     } catch (e) {
-      emit(AuthError(message: 'Failed to log in: $e')); 
+      emit(AuthError(message: 'Failed to log in: $e'));
     }
   }
 }

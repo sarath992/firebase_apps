@@ -1,8 +1,8 @@
 import 'package:auth_firebase_application/common_widgets/common_widgets.dart';
-import 'package:auth_firebase_application/model/dummy_data.dart';
 import 'package:auth_firebase_application/pages/product_list.dart';
 import 'package:auth_firebase_application/repository/user_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auth_firebase_application/authentication/pin_login_authentication.dart'; // Import your AuthBloc_Pin
 
@@ -19,10 +19,13 @@ class _PingenState extends State<Pingen> {
   final UserRepository _userRepository = UserRepository();
 
   bool _isNewUser = true;
+  void initState() {
+    super.initState();
+    SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+  }
 
   @override
   Widget build(BuildContext context) {
-    addDummyDataToFirebase();
     return Scaffold(
       appBar: CommonWidgets.buildAppBar('MPIN-Setup/Login'),
       body: BlocConsumer<AuthBloc_Pin, AuthStatus_Pin>(
@@ -58,7 +61,6 @@ class _PingenState extends State<Pingen> {
                       CommonWidgets.buildSizedBox(height: 20.0),
                       CommonWidgets.buildTextField(
                         controller: _pinController,
-                        decoration: InputDecoration(),
                         labelText: 'Create PIN',
                       ),
                       CommonWidgets.buildSizedBox(height: 20.0),
@@ -95,36 +97,35 @@ class _PingenState extends State<Pingen> {
                             return null;
                           }),
                       CommonWidgets.buildSizedBox(height: 20.0),
-                       CommonWidgets.buildTextField(
+                      CommonWidgets.buildTextField(
                         controller: _pinController,
-                        decoration: InputDecoration(),
                         labelText: 'Enter your PIN',
                       ),
                       CommonWidgets.buildSizedBox(height: 20.0),
-                       CommonWidgets.buildElevatedButton(
+                      CommonWidgets.buildElevatedButton(
                           onPressed: () async {
-                             final pin = _pinController.text;
-                          final email = _emailController.text;
-                          final isPinValid =
-                              await _userRepository.verifyPin(email, pin);
-                          if (isPinValid) {
-                            BlocProvider.of<AuthBloc_Pin>(context)
-                                .add(SignInWithPin(email: email, pin: pin));
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (ctx) => ProductListPage()));
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                content: Text(
-                                    "Pin for the registered mail id doesnot match")));
-                          }
+                            final pin = _pinController.text;
+                            final email = _emailController.text;
+                            final isPinValid =
+                                await _userRepository.verifyPin(email, pin);
+                            if (isPinValid) {
+                              BlocProvider.of<AuthBloc_Pin>(context)
+                                  .add(SignInWithPin(email: email, pin: pin));
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (ctx) => ProductListPage()));
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                  content: Text(
+                                      "Pin for the registered mail id doesnot match")));
+                            }
                           },
-                          text: 'Create PIN'),
+                          text: 'Submit'),
                       CommonWidgets.buildSizedBox(height: 20.0),
-                       CommonWidgets.buildTextButton(
+                      CommonWidgets.buildTextButton(
                           onPressed: () {
-                             setState(() {
-                            _isNewUser = true;
-                          });
+                            setState(() {
+                              _isNewUser = true;
+                            });
                           },
                           text: 'Create a new PIN'),
                     ],
@@ -133,7 +134,7 @@ class _PingenState extends State<Pingen> {
               ),
             );
           } else {
-            return CircularProgressIndicator();
+            return const CircularProgressIndicator();
           }
         },
       ),

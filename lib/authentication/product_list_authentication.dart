@@ -42,7 +42,8 @@ class ProductListBloc extends Bloc<ProductListEvent, ProductListState> {
   ) async {
     emit(ProductListLoading());
     try {
-      QuerySnapshot querySnapshot = await firestore.collection('products').get();
+      QuerySnapshot querySnapshot =
+          await firestore.collection('products').get();
       final List<Product> products = querySnapshot.docs.map((doc) {
         return Product(
           name: doc['name'],
@@ -62,7 +63,10 @@ class ProductListBloc extends Bloc<ProductListEvent, ProductListState> {
   ) async {
     emit(ProductListLoading());
     try {
-      QuerySnapshot querySnapshot = await firestore.collection('products').where('name', isGreaterThanOrEqualTo: event.searchText).get();
+      QuerySnapshot querySnapshot = await firestore
+          .collection('products')
+          .where('name', isGreaterThanOrEqualTo: event.searchText)
+          .get();
       final List<Product> products = querySnapshot.docs.map((doc) {
         return Product(
           name: doc['name'],

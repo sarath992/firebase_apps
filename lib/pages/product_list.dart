@@ -1,9 +1,10 @@
+import 'package:auth_firebase_application/authentication/login_authentication.dart';
 import 'package:auth_firebase_application/authentication/product_list_authentication.dart';
 import 'package:auth_firebase_application/pages/login.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:auth_firebase_application/pages/product_details.dart';
 import 'package:auth_firebase_application/model/dummy_data.dart';
@@ -15,6 +16,11 @@ class ProductListPage extends StatefulWidget {
 
 class _ProductListPageState extends State<ProductListPage> {
   String _searchText = '';
+  void initState() {
+    super.initState();
+    SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -33,6 +39,7 @@ class _ProductListPageState extends State<ProductListPage> {
               },
             ),
           ],
+          automaticallyImplyLeading: false,
         ),
         body: BlocBuilder<ProductListBloc, ProductListState>(
           builder: (context, state) {
@@ -80,26 +87,31 @@ class _ProductListPageState extends State<ProductListPage> {
             itemCount: filteredProducts.length,
             itemBuilder: (context, index) {
               Product product = filteredProducts[index];
-              return ListTile(
-                title: Text(product.name),
-                subtitle: Text('Price: \$${product.price.toStringAsFixed(2)}'),
-                trailing: SizedBox(
-                  width: 100.0,
-                  height: 100.0,
-                  child: QrImageView(
-                    data: _generateQrData(product),
-                    version: QrVersions.auto,
-                  ),
-                ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          ProductDetailsPage(product: product),
+              return Column(
+                children: [
+                  ListTile(
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(product.name),
+                        Text('Price: \$${product.price.toStringAsFixed(2)}'),
+                      ],
                     ),
-                  );
-                },
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              ProductDetailsPage(product: product),
+                        ),
+                      );
+                    },
+                  ),
+                  Divider(
+                    color: Colors.grey,
+                    thickness: 1.0,
+                  ),
+                ],
               );
             },
           ),
@@ -108,16 +120,16 @@ class _ProductListPageState extends State<ProductListPage> {
     );
   }
 
-  String _generateQrData(Product product) {
-    return 'Name: ${product.name}\nPrice: ${product.price}\nMeasurement: ${product.measurement}';
-  }
-
   void _signOut(BuildContext context) async {
     try {
       await FirebaseAuth.instance.signOut();
       Navigator.pop(context);
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => Login()));
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (BuildContext context) => BlocProvider(
+          create: (context) => AuthBloc(),
+          child: Login(),
+        ),
+      ));
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Sign out failed'),

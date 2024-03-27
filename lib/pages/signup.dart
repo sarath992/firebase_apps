@@ -1,16 +1,37 @@
+import 'package:auth_firebase_application/authentication/login_authentication.dart';
 import 'package:auth_firebase_application/authentication/pin_login_authentication.dart';
 import 'package:auth_firebase_application/authentication/signup_authentication.dart';
 import 'package:auth_firebase_application/common_widgets/common_widgets.dart';
+import 'package:auth_firebase_application/pages/login.dart';
 import 'package:auth_firebase_application/pages/pin_login.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class SignInRegisterPage extends StatelessWidget {
+class SignInRegisterPage extends StatefulWidget {
+  @override
+  State<SignInRegisterPage> createState() => _SignInRegisterPageState();
+}
+
+class _SignInRegisterPageState extends State<SignInRegisterPage> {
   final TextEditingController _emailController = TextEditingController();
 
   final TextEditingController _nameController = TextEditingController();
 
   final TextEditingController _passwordController = TextEditingController();
+
+  bool obscureText = true;
+
+  void _passwordVisibility() {
+    setState(() {
+      obscureText = !obscureText;
+    });
+  }
+
+  void initState() {
+    super.initState();
+    SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,15 +89,20 @@ class SignInRegisterPage extends StatelessWidget {
               ),
               CommonWidgets.buildSizedBox(height: 20.0),
               CommonWidgets.buildTextFormField(
-                controller: _passwordController,
-                labelText: 'Password',
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Please enter the password';
-                  }
-                  return null;
-                },
-              ),
+                  controller: _passwordController,
+                  labelText: 'Password',
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter the password';
+                    }
+                    return null;
+                  },
+                  obscureText: obscureText,
+                  suffixIcon: IconButton(
+                      onPressed: _passwordVisibility,
+                      icon: Icon(
+                        obscureText ? Icons.visibility_off : Icons.visibility,
+                      ))),
               CommonWidgets.buildSizedBox(height: 20.0),
               CommonWidgets.buildElevatedButton(
                 onPressed: () {
@@ -96,8 +122,8 @@ class SignInRegisterPage extends StatelessWidget {
                     onPressed: () {
                       Navigator.of(context).push(MaterialPageRoute(
                         builder: (BuildContext context) => BlocProvider(
-                          create: (context) => AuthBloc_signup(),
-                          child: SignInRegisterPage(),
+                          create: (context) => AuthBloc(),
+                          child: Login(),
                         ),
                       ));
                     },
